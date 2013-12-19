@@ -54,18 +54,8 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
     public boolean exists() {
 	try {
 	    JRamCloud.Object vertTableEntry;
-	    JRamCloud vertTable = graph.getRcClient();
 
-	    long startTime = 0;
-	    if (graph.measureRcTimeProp == 1) {
-		startTime = System.nanoTime();
-	    }
-	    //vertTableEntry = graph.getRcClient().read(tableId, rcKey);
-	    vertTableEntry = vertTable.read(tableId, rcKey);
-	    if (graph.measureRcTimeProp == 1) {
-		long endTime = System.nanoTime();
-		log.error("Performance index exists(indexName {}) read time {}", indexName, endTime - startTime);
-	    }
+	    vertTableEntry = graph.getRcClient().read(tableId, rcKey);
 	    indexVersion = vertTableEntry.version;
 	    return true;
 	} catch (Exception e) {
@@ -79,18 +69,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	    JRamCloud.RejectRules rules = graph.getRcClient().new RejectRules();
 	    rules.setExists();
 	    try {
-		JRamCloud vertTable = graph.getRcClient();
-		
-		long startTime = 0;
-		if (graph.measureRcTimeProp == 1) {
-		    startTime = System.nanoTime();
-		}
-		//graph.getRcClient().writeRule(tableId, rcKey, ByteBuffer.allocate(0).array(), rules);
-		vertTable.writeRule(tableId, rcKey, ByteBuffer.allocate(0).array(), rules);
-		if (graph.measureRcTimeProp == 1) {
-		    long endTime = System.nanoTime();
-		    log.error("Performance index create(indexName {}) write time {}", indexName, endTime - startTime);
-		}
+		graph.getRcClient().writeRule(tableId, rcKey, ByteBuffer.allocate(0).array(), rules);
 	    } catch (Exception e) {
 		log.info(toString() + ": Write create index list: " + e.toString());
 	    }
@@ -141,11 +120,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	    //throw ExceptionFactory.edgeIdCanNotBeNull();
 	}
 	
-	long startTime = 0;
-	if (graph.measureBPTimeProp == 1) {
-	    startTime = System.nanoTime();
-	}
-	
 	create();
 
 	// FIXME give more meaningful loop variable
@@ -171,11 +145,6 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 		    }
 		}
 	    }
-	}
-	
-	if (graph.measureBPTimeProp == 1) {
-	    long endTime = System.nanoTime();
-	    log.error("Performance index setProperty total time {}", endTime - startTime);
 	}
     }
 
@@ -334,17 +303,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	JRamCloud.Object propTableEntry;
 
 	try {
-	    JRamCloud vertTable = graph.getRcClient();
-	    long startTime = 0;
-	    if (graph.measureRcTimeProp == 1) {
-		startTime = System.nanoTime();
-	    }
-	    //propTableEntry = graph.getRcClient().read(tableId, rcKey);
-	    propTableEntry = vertTable.read(tableId, rcKey);
-	    if (graph.measureRcTimeProp == 1) {
-		long endTime = System.nanoTime();
-		log.error("Performance readIndexPropertyMapFromDB(indexName {}) read time {}", indexName, endTime - startTime);
-	    }
+	    propTableEntry = graph.getRcClient().read(tableId, rcKey);
 	    indexVersion = propTableEntry.version;
 	} catch (Exception e) {
 	    indexVersion = 0;

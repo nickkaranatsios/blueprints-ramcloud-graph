@@ -39,16 +39,7 @@ public class RamCloudElement implements Element, Serializable {
 	JRamCloud.Object propTableEntry;
 
 	try {
-	    JRamCloud vertTable = graph.getRcClient();
-	    long startTime = 0;
-	    if (graph.measureRcTimeProp == 1) {
-		startTime = System.nanoTime();
-	    }
-	    propTableEntry = vertTable.read(rcPropTableId, rcPropTableKey);
-	    if (graph.measureRcTimeProp == 1) {
-		long endTime = System.nanoTime();
-		log.error("Performance getPropertyMap read time {}", endTime - startTime);
-	    }
+	    propTableEntry = graph.getRcClient().read(rcPropTableId, rcPropTableKey);
 	    if (propTableEntry.value.length > 1024 * 1024 * 0.9) {
 		log.warn("Element[id={}] property map size is near 1MB limit!", new String(rcPropTableKey));
 	    }
@@ -82,17 +73,8 @@ public class RamCloudElement implements Element, Serializable {
 	kryo.writeObject(output, map);
 	output.flush();
 	rcValue = output.toBytes();
-	
-	long startTime = 0;
-	JRamCloud vertTable = graph.getRcClient();
-	if (graph.measureRcTimeProp == 1) {
-	    startTime = System.nanoTime();
-	}
-	vertTable.write(rcPropTableId, rcPropTableKey, rcValue);
-	if (graph.measureRcTimeProp == 1) {
-	    long endTime = System.nanoTime();
-	    log.error("Performance setPropertyMap write time {}", endTime - startTime);
-	}
+	graph.getRcClient().write(rcPropTableId, rcPropTableKey, rcValue);
+
     }
 
     @Override

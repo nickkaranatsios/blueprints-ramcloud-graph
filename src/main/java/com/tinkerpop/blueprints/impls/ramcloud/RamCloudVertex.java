@@ -381,30 +381,14 @@ public class RamCloudVertex extends RamCloudElement implements Vertex, Serializa
 		}
 
 		try {
-		        JRamCloud vertTable = graph.getRcClient();
-			if (graph.measureRcTimeProp == 1) {
-			    startTime = System.nanoTime();
-			}
-			vertTable.read(graph.vertTableId, rcKey);
-			if (graph.measureRcTimeProp == 1) {
-			    long endTime = System.nanoTime();
-			    log.error("Performance vertexTable read total time {}", endTime - startTime);
-			}
+			graph.getRcClient().read(graph.vertTableId, rcKey);
 			vertTableEntryExists = true;
 		} catch (Exception e) {
 			// Vertex table entry does not exist
 		}
 
 		try {
-		        JRamCloud vertTable = graph.getRcClient();
-			if (graph.measureRcTimeProp == 1) {
-			    startTime = System.nanoTime();
-			}
-			vertTable.read(graph.vertPropTableId, rcKey);
-			if (graph.measureRcTimeProp == 1) {
-			    long endTime = System.nanoTime();
-			    log.error("Performance vertexPropTable read total time {}", endTime - startTime);
-			}
+			graph.getRcClient().read(graph.vertPropTableId, rcKey);
 			vertPropTableEntryExists = true;
 		} catch (Exception e) {
 			// Vertex property table entry does not exist
@@ -423,17 +407,8 @@ public class RamCloudVertex extends RamCloudElement implements Vertex, Serializa
 	protected void create() throws IllegalArgumentException {
 		// TODO: Existence check costs extra (presently 2 reads), could use option to turn on/off
 		if (!exists()) {
-			JRamCloud vertTable = graph.getRcClient();
-			long startTime = 0;
-			if (graph.measureRcTimeProp == 1) {
-			    startTime = System.nanoTime();
-			}
-			vertTable.write(graph.vertTableId, rcKey, ByteBuffer.allocate(0).array());
-			vertTable.write(graph.vertPropTableId, rcKey, ByteBuffer.allocate(0).array());
-			if (graph.measureRcTimeProp == 1) {
-			    long endTime = System.nanoTime();
-			    log.error("Performance vertex/vertexPropTable initial total time {}", endTime - startTime);
-			}
+			graph.getRcClient().write(graph.vertTableId, rcKey, ByteBuffer.allocate(0).array());
+			graph.getRcClient().write(graph.vertPropTableId, rcKey, ByteBuffer.allocate(0).array());
 		} else {
 			throw ExceptionFactory.vertexWithIdAlreadyExists(id);
 		}
