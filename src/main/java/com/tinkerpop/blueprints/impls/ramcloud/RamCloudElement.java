@@ -111,11 +111,6 @@ public class RamCloudElement implements Element, Serializable {
 	if (this instanceof RamCloudEdge && key.equals("label")) {
 	    throw ExceptionFactory.propertyKeyLabelIsReservedForEdges();
 	}
-
-	long startTime = 0;
-	if (graph.measureBPTimeProp == 1) { 
-	    startTime = System.nanoTime();
-	}
 	
 	Map<String, Object> map = getPropertyMap();
 	oldValue = map.put(key, value);
@@ -128,17 +123,7 @@ public class RamCloudElement implements Element, Serializable {
 	} else {
 	    RamCloudKeyIndex keyIndex = new RamCloudKeyIndex(graph.kidxVertTableId, key, value, graph, Edge.class);
 	    keyIndex.autoUpdate(key, value, oldValue, this);
-	}
-	
-	if (graph.measureBPTimeProp == 1) {
-	    long endTime = System.nanoTime();
-	    if (ret) {
-		log.error("Performance vertex setProperty(key {}) which is index total time {}", key, endTime - startTime);
-	    } else {
-		log.error("Performance vertex setProperty(key {}) does not index time {}", key, endTime - startTime);
-	    }
-	}
-	
+	}	
     }
 
     @Override

@@ -69,8 +69,6 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
     private final int INSTANCE_ID_RANGE = 10000;
     private String coordinatorLocation;
     private static final Features FEATURES = new Features();
-    public final long measureBPTimeProp = Long.valueOf(System.getProperty("benchmark.measureBP", "0"));
-    public final long measureRcTimeProp = Long.valueOf(System.getProperty("benchmark.measureRc", "0"));
 
     public final Set<String> indexedKeys = new HashSet<String>();
 
@@ -152,10 +150,6 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 
     @Override
     public Vertex addVertex(Object id) {
-	long startTime = 0;
-	if (measureBPTimeProp == 1) { 
-	    startTime = System.nanoTime();
-	}
 	Long longId;
 	if (id == null) {
 	    longId = ++nextVertexId;
@@ -186,10 +180,6 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 
 	try {
 	    newVertex.create();
-	    if (measureBPTimeProp == 1) { 
-		long endTime = System.nanoTime();
-		log.error("Performance addVertex total time {}", endTime - startTime);
-	    }
 	    log.info("Added vertex: [id={" + longId + "}]");
 	    return newVertex;
 	} catch (IllegalArgumentException e) {
@@ -323,11 +313,6 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
     @Override
     public Iterable<Vertex> getVertices(String key, Object value) {
 
-	long startTime = 0;
-	if (measureBPTimeProp == 1) { 
-	    startTime = System.nanoTime();
-	}
-	
 	List<Vertex> vertices = new ArrayList<Vertex>();
 	List<Object> vertexList = null;
 
@@ -337,10 +322,6 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 	    RamCloudKeyIndex KeyIndex = new RamCloudKeyIndex(kidxVertTableId, key, value, this, Vertex.class);
 	    vertexList = KeyIndex.getElmIdListForPropValue(value.toString());
 	    if (vertexList == null) {
-		if (measureBPTimeProp == 1) { 
-		    long endTime = System.nanoTime();
-		    log.error("Performance getVertices(key {}) does not exists total time {}", key, endTime - startTime);
-		}
 		return vertices;
 	    }
 
@@ -387,11 +368,6 @@ public class RamCloudGraph implements IndexableGraph, KeyIndexableGraph, Transac
 		    }
 		}
 	    }
-	}
-	
-	if (measureBPTimeProp == 1) { 
-		long endTime = System.nanoTime();
-		log.error("Performance getVertices exists total time {}.", endTime - startTime);
 	}
 
 	return vertices;

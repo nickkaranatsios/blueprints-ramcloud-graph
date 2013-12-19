@@ -374,12 +374,6 @@ public class RamCloudVertex extends RamCloudElement implements Vertex, Serializa
 		boolean vertTableEntryExists = false;
 		boolean vertPropTableEntryExists = false;
 		
-		long startTime = 0;
-		    
-		if (graph.measureRcTimeProp == 1) { 
-		    startTime = System.nanoTime();
-		}
-
 		try {
 			graph.getRcClient().read(graph.vertTableId, rcKey);
 			vertTableEntryExists = true;

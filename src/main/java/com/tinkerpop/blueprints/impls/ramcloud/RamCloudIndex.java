@@ -351,16 +351,7 @@ public class RamCloudIndex<T extends Element> implements Index<T>, Serializable 
 	}
 
 	try {
-	    JRamCloud vertTable = graph.getRcClient();
-	    long startTime = 0;
-	    if (graph.measureRcTimeProp == 1) {
-		startTime = System.nanoTime();
-	    }
-	    vertTable.writeRule(tableId, rcKey, rcValue, rules);
-	    if (graph.measureRcTimeProp == 1) {
-		long endTime = System.nanoTime();
-		log.error("Performance writeWithRules(indexName {}) write time {}", rcKeyToIndexName(rcKey), endTime - startTime);
-	    }
+	    graph.getRcClient().writeRule(tableId, rcKey, rcValue, rules);
 	} catch (Exception e) {
 	    log.debug("Cond. Write index property: " + new String(rcKey) + " failed " + e.toString() + " expected version: " + expectedVersion);
 	    return false;
